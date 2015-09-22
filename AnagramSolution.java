@@ -3,19 +3,17 @@ package com.example.interview;
 import java.io.*;
 import java.util.*;
 import java.util.List;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.CopyOnWriteArrayList;
 
 public class AnagramSolution
 {
-    public List<ConcurrentHashMap<Character, Integer>> getCharsCountMap(String word)
+    public List<HashMap<Character, Integer>> getCharsCountMap(String word)
     {
-        List<ConcurrentHashMap<Character, Integer>> result = new CopyOnWriteArrayList<>();
+        List<HashMap<Character, Integer>> result = new ArrayList<>();
         char[] wordToChars = word.toCharArray();
         for (char c : wordToChars)
         {
             boolean existFlag = false;
-            for (ConcurrentHashMap<Character, Integer> countMap : result)
+            for (HashMap<Character, Integer> countMap : result)
             {
                 if (countMap.containsKey(c))
                 {
@@ -26,7 +24,7 @@ public class AnagramSolution
             }
             if (!existFlag)
             {
-                ConcurrentHashMap<Character, Integer> cMap = new ConcurrentHashMap<>();
+                HashMap<Character, Integer> cMap = new HashMap<>();
                 cMap.put(c, 1);
                 result.add(cMap);
             }
@@ -34,14 +32,14 @@ public class AnagramSolution
         return result;
     }
 
-    public boolean contain(List<ConcurrentHashMap<Character, Integer>> candidateCharsCountMap, List<ConcurrentHashMap<Character, Integer>> inputWordToCharsCountMap)
+    public boolean contain(List<HashMap<Character, Integer>> candidateCharsCountMap, List<HashMap<Character, Integer>> inputWordToCharsCountMap)
     {
         boolean subsetFlag = false;
 
         if (candidateCharsCountMap.size() > inputWordToCharsCountMap.size())
             return false;
 
-        for (ConcurrentHashMap<Character, Integer> candidate : candidateCharsCountMap)
+        for (HashMap<Character, Integer> candidate : candidateCharsCountMap)
         {
             Map.Entry<Character, Integer> entry = candidate.entrySet().iterator().next();
             Character key = entry.getKey();
@@ -62,9 +60,9 @@ public class AnagramSolution
         return subsetFlag;
     }
 
-    public List<ConcurrentHashMap<Character, Integer>> subtract(List<ConcurrentHashMap<Character, Integer>> candidate, List<ConcurrentHashMap<Character, Integer>> inputWord)
+    public List<HashMap<Character, Integer>> subtract(List<HashMap<Character, Integer>> candidate, List<HashMap<Character, Integer>> inputWord)
     {
-        for (ConcurrentHashMap<Character, Integer> c : candidate)
+        for (HashMap<Character, Integer> c : candidate)
         {
             Map.Entry<Character, Integer> entry = c.entrySet().iterator().next();
             Character key = entry.getKey();
@@ -82,9 +80,9 @@ public class AnagramSolution
         return inputWord;
     }
 
-    public List<ConcurrentHashMap<Character, Integer>> add(List<ConcurrentHashMap<Character, Integer>> candidate, List<ConcurrentHashMap<Character, Integer>> inputWord)
+    public List<HashMap<Character, Integer>> add(List<HashMap<Character, Integer>> candidate, List<HashMap<Character, Integer>> inputWord)
     {
-        for (ConcurrentHashMap<Character, Integer> c : candidate)
+        for (HashMap<Character, Integer> c : candidate)
         {
             Map.Entry<Character, Integer> entry = c.entrySet().iterator().next();
             Character key = entry.getKey();
@@ -103,19 +101,20 @@ public class AnagramSolution
 
     public List<List<String>> search(String inputWord)
     {
+        //change to your file path
         String filePath = "D:\\workspace\\simple-service-webapp\\src\\main\\java\\com\\example\\interview\\words.txt";
-        List<String> wordLists = new CopyOnWriteArrayList<>();
-        List<String> anagrams = new CopyOnWriteArrayList();
-        List<List<String>> allAnagrams = new CopyOnWriteArrayList<>();
+        List<String> wordLists = new ArrayList<>();
+        List<String> anagrams = new ArrayList();
+        List<List<String>> allAnagrams = new ArrayList<>();
 
         try
         {
             String word;
             BufferedReader reader = new BufferedReader(new FileReader(filePath));
-            List<ConcurrentHashMap<Character, Integer>> inputWordToCharsCountMap = getCharsCountMap(inputWord);
+            List<HashMap<Character, Integer>> inputWordToCharsCountMap = getCharsCountMap(inputWord);
             while ((word = reader.readLine()) != null)
             {
-                List<ConcurrentHashMap<Character, Integer>> candidateCharsCountMap = getCharsCountMap(word);
+                List<HashMap<Character, Integer>> candidateCharsCountMap = getCharsCountMap(word);
                 if (word.length() != 1 && contain(candidateCharsCountMap, inputWordToCharsCountMap))
                     wordLists.add(word);
             }
@@ -131,7 +130,7 @@ public class AnagramSolution
         return allAnagrams;
     }
 
-    public boolean checkInputWordIsEmpty(List<ConcurrentHashMap<Character, Integer>> inputWord)
+    public boolean checkInputWordIsEmpty(List<HashMap<Character, Integer>> inputWord)
     {
         boolean emptyFlag = true;
         for (Map<Character, Integer> map : inputWord)
@@ -143,7 +142,7 @@ public class AnagramSolution
         return emptyFlag;
     }
 
-    public void getSubAnagram(List<String> wordLists, List<ConcurrentHashMap<Character, Integer>> inputWord,
+    public void getSubAnagram(List<String> wordLists, List<HashMap<Character, Integer>> inputWord,
                               List<String> anagrams, List<List<String>> allAnagrams)
     {
         if (checkInputWordIsEmpty(inputWord))
@@ -152,7 +151,7 @@ public class AnagramSolution
         {
             for (String word : wordLists)
             {
-                List<ConcurrentHashMap<Character, Integer>> candidate = getCharsCountMap(word);
+                List<HashMap<Character, Integer>> candidate = getCharsCountMap(word);
                 if (candidate.size() <= inputWord.size() && contain(candidate, inputWord))
                 {
                     inputWord = subtract(candidate, inputWord);
@@ -165,7 +164,7 @@ public class AnagramSolution
 
     public List<String> newAnagrams(List<String> anagrams, String word)
     {
-        List<String> anagram = new CopyOnWriteArrayList<>();
+        List<String> anagram = new ArrayList<>();
         for (String candidate : anagrams)
         {
             anagram.add(candidate);
@@ -176,24 +175,25 @@ public class AnagramSolution
 
     public void printTwoWords(List<List<String>> allAnagrams)
     {
-        boolean existTowWords = false;
+        boolean existTwoWords = false;
         if (!allAnagrams.isEmpty())
         {
             for (List<String> anagrams : allAnagrams)
             {
                 if (anagrams.size() == 2)
                 {
-                    existTowWords = true;
+                    existTwoWords = true;
                     System.out.println("The two anagrams are: ");
                     for (String anagram : anagrams)
                     {
                         System.out.println(anagram);
                     }
+                    break;
                 }
             }
         }
 
-        if (!allAnagrams.isEmpty() || !existTowWords)
+        if (allAnagrams.isEmpty() || !existTwoWords)
             System.out.println("No two words anagram");
     }
 
@@ -220,7 +220,6 @@ public class AnagramSolution
     {
         System.out.println("Please input one word: ");
         Scanner inputWord = new Scanner(System.in);
-
         AnagramSolution as = new AnagramSolution();
         List<List<String>> allAnagrams = as.search(inputWord.nextLine());
         as.printTwoWords(allAnagrams);
